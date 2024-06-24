@@ -40,7 +40,7 @@ const loginUserFromDB = async (payload: Partial<TUser>) => {
     password as string,
     user?.password,
   );
-  console.log(isPasswordMatched);
+  // console.log(isPasswordMatched);
 
   if (!isPasswordMatched) {
     throw new AppError(httpStatus.FORBIDDEN, '    password does not match  ');
@@ -79,7 +79,7 @@ const refreshToken = async (token: string) => {
   ) as JwtPayload;
 
   //get data from token decoded
-  const { userId, iat } = decoded;
+  const { userId } = decoded;
 
   //validations
   const user = await AuthUser.findOne({ _id: userId });

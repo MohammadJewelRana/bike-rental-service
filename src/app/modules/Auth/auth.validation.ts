@@ -12,6 +12,18 @@ const userValidationSchema = z.object({
   }),
 });
 
+const updateUserValidationSchema = z.object({
+  body: z.object({
+    name: z.string().optional(),
+    email: z.string().optional(),
+    password: z.string({ invalid_type_error: 'password must be string' }).optional(),
+    phone: z.string().optional(),
+    address: z.string().optional(),
+    
+    isDeleted: z.boolean().optional().default(false),
+  }),
+});
+
 const loginValidationSchema = z.object({
   body: z.object({
     email: z.string(),
@@ -31,5 +43,6 @@ const refreshTokenValidationSchema = z.object({
 export const AuthValidations = {
   userValidationSchema,
   loginValidationSchema,
-  refreshTokenValidationSchema
+  refreshTokenValidationSchema,
+  updateUserValidationSchema,
 };
