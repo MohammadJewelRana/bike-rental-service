@@ -8,7 +8,7 @@ import config from '../config';
 import { AuthUser } from '../modules/Auth/auth.model';
  
 
-const auth = (requiredRoles : string) => {
+const auth = (...requiredRoles : string[]) => {
 
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     // console.log(req.headers.authorization);
@@ -21,6 +21,9 @@ const auth = (requiredRoles : string) => {
         'you are unauthorized user!!',
       );
     }
+
+    // console.log(requiredRoles);
+    
 
     //verify token
     const decoded = jwt.verify(
