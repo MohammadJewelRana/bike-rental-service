@@ -111,12 +111,12 @@ const returnBikeFromDB = async (rentId: string) => {
     await session.commitTransaction();
     await session.endSession();
 
-    // return result;
+    return result;
 
-    return {
-      updateBikeAvailability,
-      result,
-    };
+    // return {
+    //   updateBikeAvailability,
+    //   result,
+    // };
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();

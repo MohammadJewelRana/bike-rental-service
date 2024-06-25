@@ -18,6 +18,8 @@ const createRental = catchAsync(async (req, res) => {
 
 const returnBike = catchAsync(async (req, res) => {
     // console.log(req.params);
+    // console.log(req.user);
+    
     const {id}=req.params;
     
     const result = await RentalServices.returnBikeFromDB(id);

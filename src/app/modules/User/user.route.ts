@@ -13,7 +13,7 @@ const router=express.Router();
 
 router.get('/me',auth('admin'), UserController.getSingleUser);
 
-router.put('/me',auth('admin'), validateRequest(AuthValidations.updateUserValidationSchema), UserController.updateProfile);
+router.put('/me',auth('admin','user'), validateRequest(AuthValidations.updateUserValidationSchema), UserController.updateProfile);
 
  
  

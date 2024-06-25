@@ -42,28 +42,6 @@ const auth = (...requiredRoles : string[]) => {
     if (user?.isDeleted === true) {
       throw new AppError(httpStatus.NOT_FOUND, 'User does not exists');
     }
- 
-    //old token expire if password change then create new token
-    // const isJWTIssuedBeforePasswordChanged = (
-    //   passwordChangedTimeStamp: Date,
-    //   jwtIssuedTimestamp: number,
-    // ) => {
-    //   //convert in mili second like jwt issued timestamp
-    //   const passwordChangedTime =
-    //     new Date(passwordChangedTimeStamp).getTime() / 1000;
-    //   return passwordChangedTime > jwtIssuedTimestamp;
-    // };
-    // if (
-    //   user.passwordChangedAt &&
-    //   isJWTIssuedBeforePasswordChanged(
-    //     user.passwordChangedAt,
-    //     iat as number,
-    //   )
-    // ) {
-    //   throw new AppError(httpStatus.FORBIDDEN, 'you are not authorized!!');
-    // }
-
-
 
     //authorization check from route
     if (requiredRoles && !requiredRoles.includes(role)) {
