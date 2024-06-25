@@ -6,6 +6,8 @@ import { Bikes } from '../Bike/bike.model';
 import mongoose from 'mongoose';
 import { AppError } from '../../errors/AppError';
 import httpStatus from 'http-status';
+import { calculateTotalCost } from './booking.utils';
+import { start } from 'repl';
 
 const createRentalIntoDB = async (userData: JwtPayload, payload: TRental) => {
   //  console.log(userData);
@@ -56,22 +58,75 @@ const createRentalIntoDB = async (userData: JwtPayload, payload: TRental) => {
   }
 };
 
-// update single bike
-// const updateSingleBikeFromDB = async (
-//   bikeID: string,
-//   payload: Partial<TBike>,
-// ) => {
-//   const isBikeExist = await Bikes.findById({ _id: bikeID });
-//   if (!isBikeExist) {
-//     throw new AppError(400, 'Bike does not exists');
-//   }
-//   const result = await Bikes.findOneAndUpdate({ _id: bikeID }, payload, {
-//     new: true,
-//   });
+//return bike
+const returnBikeFromDB = async (rentId: string) => {
+  const isRentalExist = await Rental.findById({ _id: rentId });
+  if (!isRentalExist) {
+    throw new AppError(400, 'Rental does not exists');
+  }
+  const { bikeId, startTime } = isRentalExist;
 
-//   return result;
-// };
+  const bikeInfo = await Bikes.findById({ _id: bikeId });
+  if (!bikeInfo) {
+    throw new AppError(400, 'Bike does not exists');
+  }
+
+  const instantTime = new Date().toISOString();
+  const { totalCost } = calculateTotalCost(
+    startTime,
+    bikeInfo.pricePerHour,
+    instantTime,
+  );
+
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+
+    //transaction 1
+    const updateBikeAvailability = await Bikes.findOneAndUpdate(
+      { _id: bikeId },
+      { $set: { isAvailable: true } },
+      { new: true },
+    );
+    if (!updateBikeAvailability) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'failed to return bike');
+    }
+
+    //transaction 2
+    const result = await Rental.findOneAndUpdate(
+      { _id: rentId },
+      {
+        $set: {
+          totalCost: totalCost,
+          returnTime: instantTime,
+          isReturned: true,
+        },
+      },
+      { new: true },
+    );
+    if (!result) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'failed to return bike');
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    // return result;
+
+    return {
+      updateBikeAvailability ,
+      result
+    }
+
+
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(' failed to    return bike');
+  }
+};
 
 export const RentalServices = {
   createRentalIntoDB,
+  returnBikeFromDB,
 };
