@@ -11,9 +11,11 @@ import auth from '../../middleware/auth';
 
 const router=express.Router();
 
-router.post('/' ,auth('user' ,'admin'), validateRequest(RentalValidations.rentalValidationSchema), RentalController.createRental);
+router.post('/' ,auth('user'), validateRequest(RentalValidations.rentalValidationSchema), RentalController.createRental);
 
 router.put('/:id/return' ,auth('admin'), RentalController.returnBike);
+
+router.get('/' ,auth('user'), RentalController.getAllBike);
  
 
 

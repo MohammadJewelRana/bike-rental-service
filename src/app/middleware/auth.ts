@@ -69,7 +69,7 @@ const auth = (...requiredRoles : string[]) => {
     if (requiredRoles && !requiredRoles.includes(role)) {
       throw new AppError(
         httpStatus.UNAUTHORIZED,
-        'you are not  authorized user!!',
+        'You have no access to this route!!',
       );
     }
     req.user = decoded as JwtPayload;

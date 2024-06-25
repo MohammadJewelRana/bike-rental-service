@@ -7,8 +7,8 @@ import mongoose from 'mongoose';
 import { AppError } from '../../errors/AppError';
 import httpStatus from 'http-status';
 import { calculateTotalCost } from './booking.utils';
-import { start } from 'repl';
 
+//create rental
 const createRentalIntoDB = async (userData: JwtPayload, payload: TRental) => {
   //  console.log(userData);
 
@@ -114,11 +114,9 @@ const returnBikeFromDB = async (rentId: string) => {
     // return result;
 
     return {
-      updateBikeAvailability ,
-      result
-    }
-
-
+      updateBikeAvailability,
+      result,
+    };
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();
@@ -126,7 +124,17 @@ const returnBikeFromDB = async (rentId: string) => {
   }
 };
 
+//get all rental
+const getAllRentalFromDB = async (userData: JwtPayload) => {
+  // console.log(userData);
+
+  const result = await Rental.find({ userId: userData?.userId });
+
+  return result;
+};
+
 export const RentalServices = {
   createRentalIntoDB,
   returnBikeFromDB,
+  getAllRentalFromDB,
 };
