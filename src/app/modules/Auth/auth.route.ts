@@ -6,11 +6,9 @@ import { AuthValidations } from './auth.validation';
 import auth from '../../middleware/auth';
  
 
-
-
 const router=express.Router();
 
-router.post('/signup',validateRequest(AuthValidations.userValidationSchema) ,AuthController.createUser);
+router.post('/signup',   validateRequest(AuthValidations.userValidationSchema) ,AuthController.createUser);
 
 router.get('/', auth('admin'),AuthController.getAllUser);
 

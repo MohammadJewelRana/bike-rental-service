@@ -1,23 +1,20 @@
-
 import express from 'express';
 import { RentalController } from './booking.controller';
 import validateRequest from '../../middleware/validateRequest';
 import { RentalValidations } from './booking.validation';
 import auth from '../../middleware/auth';
- 
- 
 
+const router = express.Router();
 
+router.post(
+  '/',
+  auth('user'),
+  validateRequest(RentalValidations.rentalValidationSchema),
+  RentalController.createRental,
+);
 
-const router=express.Router();
+router.put('/:id/return', auth('admin'), RentalController.returnBike);
 
-router.post('/' ,auth('user'), validateRequest(RentalValidations.rentalValidationSchema), RentalController.createRental);
+router.get('/', auth('user'), RentalController.getAllBike);
 
-router.put('/:id/return' ,auth('admin'), RentalController.returnBike);
-
-router.get('/' ,auth('user'), RentalController.getAllBike);
- 
-
-
-
-export const RentalRoute=router;
+export const RentalRoute = router;

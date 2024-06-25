@@ -11,7 +11,7 @@ import { AuthValidations } from '../Auth/auth.validation';
 
 const router=express.Router();
 
-router.get('/me',auth('admin'), UserController.getSingleUser);
+router.get('/me',auth('admin','user'), UserController.getSingleUser);
 
 router.put('/me',auth('admin','user'), validateRequest(AuthValidations.updateUserValidationSchema), UserController.updateProfile);
 
